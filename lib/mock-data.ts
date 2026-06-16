@@ -48,6 +48,11 @@ export type NextEvent = {
   kind: "Deadline" | "OA" | "Interview" | "Result"
 }
 
+export type NextAction = {
+  label: string
+  detail: string
+}
+
 export type Opportunity = {
   id: string
   title: string
@@ -65,12 +70,14 @@ export type Opportunity = {
   deadline: string
   tags: string[]
   description: string
+  requirements: string[]
   matchReasons: string[]
   matchDetail: MatchDetail
   saved: boolean
   stage?: Stage
   health?: ApplicationHealth
   nextEvent?: NextEvent
+  nextAction?: NextAction
   notes?: string
   resumeUsed?: string
   applicationLink?: string
@@ -118,7 +125,7 @@ export const LOCATIONS = [
   "Berlin, DE",
 ]
 
-export const opportunities: Opportunity[] = [
+const baseOpportunities: Opportunity[] = [
   {
     id: "op-1",
     title: "Software Engineer, New Grad",
@@ -137,6 +144,12 @@ export const opportunities: Opportunity[] = [
     tags: ["Go", "Distributed Systems", "C++"],
     description:
       "Join the Core Infrastructure team building the systems that power Google scale. Work across the stack on highly available, low-latency services.",
+    requirements: [
+      "BS/MS in Computer Science or equivalent practical experience",
+      "Proficiency in one or more of Go, C++, or Java",
+      "Familiarity with distributed systems and data structures",
+      "Graduating between Dec 2025 and Aug 2026",
+    ],
     matchReasons: [
       "Your Go and distributed systems experience strongly aligns with the core requirements.",
       "Your past internship at a cloud infra team maps directly to the team's charter.",
@@ -157,6 +170,10 @@ export const opportunities: Opportunity[] = [
     stage: "Interview Scheduled",
     health: "On Track",
     nextEvent: { label: "Onsite interview", date: "2026-06-26", kind: "Interview" },
+    nextAction: {
+      label: "Prepare for onsite interview",
+      detail: "Review consistent hashing, sharding, and 2 system design problems before Jun 26.",
+    },
     notes: "Recruiter mentioned 4 rounds: 2 coding, 1 system design, 1 behavioral. Brush up on consistent hashing.",
     resumeUsed: "Avery_Rivera_SWE_Infra_v3.pdf",
     applicationLink: "https://careers.google.com/jobs/results/swe-new-grad",
@@ -186,6 +203,12 @@ export const opportunities: Opportunity[] = [
     tags: ["React", "TypeScript", "Design Systems"],
     description:
       "Build delightful, accessible interfaces for Stripe's Dashboard used by millions of businesses. Partner closely with design and product.",
+    requirements: [
+      "Currently pursuing a degree in CS or related field",
+      "Strong React and TypeScript fundamentals",
+      "Experience with component libraries or design systems a plus",
+      "Available for a 12-week summer internship",
+    ],
     matchReasons: [
       "Your React + TypeScript portfolio matches the team's primary stack.",
       "Strong signal from your design-systems side projects.",
@@ -206,6 +229,10 @@ export const opportunities: Opportunity[] = [
     stage: "Applied",
     health: "Deadline Risk",
     nextEvent: { label: "Application due", date: "2026-06-25", kind: "Deadline" },
+    nextAction: {
+      label: "Submit cover letter",
+      detail: "Tailor your cover letter to the design-systems team and reference your component library project.",
+    },
     notes: "Need to tailor cover letter to the design-systems team. Reference the component library project.",
     resumeUsed: "Avery_Rivera_Frontend_v2.pdf",
     applicationLink: "https://stripe.com/jobs/listing/frontend-intern",
@@ -232,6 +259,12 @@ export const opportunities: Opportunity[] = [
     tags: ["AI SDK", "Next.js", "48 hours"],
     description:
       "A 48-hour global hackathon to build AI-native applications. $50k prize pool, mentorship from the Vercel team, and a fast-track interview for finalists.",
+    requirements: [
+      "Open to students and early-career engineers",
+      "Teams of 1–4 participants",
+      "Project must use an AI model or the AI SDK",
+      "Submit a repo and 2-minute demo video",
+    ],
     matchReasons: [
       "Your Next.js and AI SDK experience fits the hackathon theme perfectly.",
       "Remote format matches your availability this month.",
@@ -252,6 +285,10 @@ export const opportunities: Opportunity[] = [
     stage: "Interested",
     health: "Deadline Risk",
     nextEvent: { label: "Registration closes", date: "2026-06-20", kind: "Deadline" },
+    nextAction: {
+      label: "Register before it closes",
+      detail: "Registration closes Jun 20. Lock in a team and project idea today.",
+    },
   },
   {
     id: "op-4",
@@ -271,6 +308,12 @@ export const opportunities: Opportunity[] = [
     tags: ["PyTorch", "LLMs", "Azure"],
     description:
       "Work on applied ML for Microsoft Copilot. Train, fine-tune, and ship large models into production at planetary scale.",
+    requirements: [
+      "MS/PhD in ML, CS, or related field, or equivalent experience",
+      "Hands-on experience with PyTorch or TensorFlow",
+      "Understanding of transformer architectures and LLMs",
+      "Familiarity with cloud ML pipelines (Azure preferred)",
+    ],
     matchReasons: [
       "Your PyTorch and LLM coursework aligns with the role.",
       "Seattle is within your preferred locations.",
@@ -291,6 +334,10 @@ export const opportunities: Opportunity[] = [
     stage: "OA Scheduled",
     health: "Action Needed",
     nextEvent: { label: "Online assessment", date: "2026-06-24", kind: "OA" },
+    nextAction: {
+      label: "Prepare for online assessment",
+      detail: "OA covers ML fundamentals + coding. Review transformer architectures before Jun 24.",
+    },
     notes: "OA covers ML fundamentals + a coding section. Review transformer architectures.",
     resumeUsed: "Avery_Rivera_ML_v1.pdf",
     applicationLink: "https://careers.microsoft.com/ml-engineer",
@@ -317,6 +364,12 @@ export const opportunities: Opportunity[] = [
     tags: ["Java", "AWS", "Microservices"],
     description:
       "Own critical payment processing services. Design fault-tolerant, idempotent systems that move billions of dollars safely.",
+    requirements: [
+      "3+ years or strong internship experience in backend development",
+      "Proficiency in Java or a similar language",
+      "Experience with AWS and distributed systems",
+      "Understanding of idempotency and fault tolerance",
+    ],
     matchReasons: [
       "Your Java and AWS background matches the stack.",
       "Remote-friendly, fitting your location preference.",
@@ -337,6 +390,10 @@ export const opportunities: Opportunity[] = [
     stage: "Applied",
     health: "On Track",
     nextEvent: { label: "Final round", date: "2026-07-08", kind: "Interview" },
+    nextAction: {
+      label: "Schedule final round",
+      detail: "Recruiter is waiting on your availability for the final loop. Reply with 3 slots.",
+    },
     notes: "Heard back positively from recruiter. Final loop covers LP behavioral + system design.",
     resumeUsed: "Avery_Rivera_Backend_v2.pdf",
     applicationLink: "https://amazon.jobs/payments-backend",
@@ -363,6 +420,12 @@ export const opportunities: Opportunity[] = [
     tags: ["Fully Funded", "Graduate", "Leadership"],
     description:
       "A fully funded graduate scholarship developing the next generation of global leaders. Covers tuition, stipend, and a leadership development program.",
+    requirements: [
+      "Applying to a Stanford graduate program",
+      "Demonstrated leadership and civic commitment",
+      "Bachelor's degree conferred in 2019 or later",
+      "Two letters of recommendation",
+    ],
     matchReasons: [
       "Your leadership and open-source community work strengthen the application.",
       "Aligns with your interest in graduate study.",
@@ -399,6 +462,11 @@ export const opportunities: Opportunity[] = [
     tags: ["Web3", "Solo / Team", "6 weeks"],
     description:
       "A 6-week build cohort where you ship a product from idea to launch. Demo day in front of investors and a community of 10k builders.",
+    requirements: [
+      "Open to anyone who can commit ~10 hrs/week",
+      "Ship a working product by demo day",
+      "Weekly progress updates required",
+    ],
     matchReasons: [
       "Your shipping cadence on side projects is a strong fit.",
       "Demo day exposure aligns with your fundraising curiosity.",
@@ -435,6 +503,11 @@ export const opportunities: Opportunity[] = [
     tags: ["Figma", "Mentorship", "12 weeks"],
     description:
       "A 12-week mentored fellowship for emerging product designers. Ship real features alongside Notion's design team.",
+    requirements: [
+      "Portfolio demonstrating product design work",
+      "Proficiency in Figma",
+      "Available for a 12-week in-person program in NYC",
+    ],
     matchReasons: [
       "Your design portfolio shows strong product thinking.",
       "Mentorship structure fits early-career growth goals.",
@@ -454,7 +527,6 @@ export const opportunities: Opportunity[] = [
     saved: false,
     stage: "Rejected",
     health: "On Track",
-    nextEvent: undefined,
     notes: "Rejected at portfolio review stage. Feedback: strengthen prototyping case studies.",
     resumeUsed: "Avery_Rivera_Design_v1.pdf",
     applicationLink: "https://notion.so/careers/design-fellowship",
@@ -482,6 +554,11 @@ export const opportunities: Opportunity[] = [
     tags: ["Rails", "React", "Startups"],
     description:
       "Join an early-stage team building the platform where the world's startups hire. Wear many hats and ship fast.",
+    requirements: [
+      "Comfortable across frontend and backend",
+      "Experience with React and a server framework",
+      "Thrives in a fast-paced startup environment",
+    ],
     matchReasons: [
       "Your full-stack range fits a startup generalist role.",
       "Remote-first matches your preference.",
@@ -502,6 +579,10 @@ export const opportunities: Opportunity[] = [
     stage: "OA Completed",
     health: "On Track",
     nextEvent: { label: "Awaiting OA result", date: "2026-06-23", kind: "Result" },
+    nextAction: {
+      label: "Follow up on OA result",
+      detail: "It's been 4 days since submission. Send a polite check-in to the recruiter.",
+    },
     notes: "Completed take-home OA. Solid solution; awaiting reviewer feedback.",
     resumeUsed: "Avery_Rivera_Fullstack_v2.pdf",
     applicationLink: "https://wellfound.com/jobs/fullstack-engineer",
@@ -530,6 +611,11 @@ export const opportunities: Opportunity[] = [
     tags: ["Python", "Equity", "Seed Stage"],
     description:
       "Founding engineer role at a seed-stage YC company building AI agents for operations teams. High ownership, high equity.",
+    requirements: [
+      "Strong backend fundamentals in Python or Go",
+      "Excited to be an early/founding engineer",
+      "Comfortable with ambiguity and high ownership",
+    ],
     matchReasons: [
       "Your Python and agent experiments match the product direction.",
       "You indicated openness to high-equity early roles.",
@@ -550,6 +636,10 @@ export const opportunities: Opportunity[] = [
     stage: "Interview Completed",
     health: "Action Needed",
     nextEvent: { label: "Founder decision", date: "2026-06-27", kind: "Result" },
+    nextAction: {
+      label: "Send thank-you note",
+      detail: "Email the founders a thank-you and your side-project repo link to stay top of mind.",
+    },
     notes: "Strong vibe with founders. Send a thank-you note and the side-project repo link.",
     resumeUsed: "Avery_Rivera_Backend_v2.pdf",
     applicationLink: "https://ycombinator.com/jobs/w27-swe",
@@ -578,6 +668,11 @@ export const opportunities: Opportunity[] = [
     tags: ["C#", "Azure", "Kubernetes"],
     description:
       "Build tooling for the Azure container platform. Learn how planet-scale infrastructure is operated and shipped.",
+    requirements: [
+      "Pursuing a CS degree, graduating 2027 or later",
+      "Familiarity with containers and cloud concepts",
+      "Any backend language experience (C# a plus)",
+    ],
     matchReasons: [
       "Your Kubernetes homelab project is a strong signal.",
       "Remote internship fits your summer plans.",
@@ -614,6 +709,11 @@ export const opportunities: Opportunity[] = [
     tags: ["DSA", "Cash Prize", "National"],
     description:
       "A national competitive programming championship with cash prizes and direct interview opportunities with top recruiters.",
+    requirements: [
+      "Open to students and recent graduates",
+      "Solo participation",
+      "Qualifying round rating threshold applies",
+    ],
     matchReasons: [
       "Your competitive programming rating is above the qualifying bar.",
       "Recruiter pipeline aligns with your job search.",
@@ -634,6 +734,10 @@ export const opportunities: Opportunity[] = [
     stage: "Offer",
     health: "On Track",
     nextEvent: { label: "Accept offer by", date: "2026-07-01", kind: "Result" },
+    nextAction: {
+      label: "Respond to the offer",
+      detail: "Accept or decline the championship offer by Jul 1.",
+    },
     notes: "Won regional round — offer includes cash prize + fast-track interviews. Decide by Jul 1.",
     resumeUsed: "Avery_Rivera_SWE_Infra_v3.pdf",
     applicationLink: "https://unstop.com/competitions/coding-championship",
@@ -646,6 +750,208 @@ export const opportunities: Opportunity[] = [
   },
 ]
 
+// ---- Generated discover catalog (keeps the radar feeling full) ----
+
+type GenCompany = { org: string; logo: string; source: string }
+
+const GEN_COMPANIES: GenCompany[] = [
+  { org: "Meta", logo: "Me", source: "Wellfound" },
+  { org: "Databricks", logo: "Db", source: "Wellfound" },
+  { org: "Snowflake", logo: "Sn", source: "Wellfound" },
+  { org: "OpenAI", logo: "O", source: "YC Jobs" },
+  { org: "Anthropic", logo: "An", source: "YC Jobs" },
+  { org: "Nvidia", logo: "Nv", source: "Wellfound" },
+  { org: "Figma", logo: "Fg", source: "Wellfound" },
+  { org: "Airbnb", logo: "Ab", source: "Wellfound" },
+  { org: "Coinbase", logo: "Cb", source: "Wellfound" },
+  { org: "Ramp", logo: "R", source: "YC Jobs" },
+  { org: "Plaid", logo: "Pl", source: "YC Jobs" },
+  { org: "Datadog", logo: "Dd", source: "Wellfound" },
+  { org: "Linear", logo: "Li", source: "YC Jobs" },
+  { org: "Netflix", logo: "Nf", source: "Wellfound" },
+  { org: "Robinhood", logo: "Rh", source: "Wellfound" },
+  { org: "Google", logo: "G", source: "Google Careers" },
+  { org: "Amazon", logo: "A", source: "Amazon Careers" },
+  { org: "Microsoft", logo: "M", source: "Microsoft Careers" },
+]
+
+type RoleSpec = {
+  matched: string[]
+  missing: string[]
+  tags: string[]
+  salary: string
+  internSalary: string
+}
+
+const ROLE_SPECS: Record<string, RoleSpec> = {
+  "Software Engineer": {
+    matched: ["TypeScript", "Go", "PostgreSQL"],
+    missing: ["Kubernetes"],
+    tags: ["Go", "Distributed Systems", "APIs"],
+    salary: "$135k–$180k",
+    internSalary: "$8.5k / mo",
+  },
+  "Frontend Engineer": {
+    matched: ["React", "TypeScript", "Next.js"],
+    missing: ["WebGL"],
+    tags: ["React", "TypeScript", "UI"],
+    salary: "$130k–$172k",
+    internSalary: "$8k / mo",
+  },
+  "Backend Engineer": {
+    matched: ["Go", "PostgreSQL", "AWS"],
+    missing: ["Kafka"],
+    tags: ["Go", "Microservices", "AWS"],
+    salary: "$140k–$185k",
+    internSalary: "$8.5k / mo",
+  },
+  "ML Engineer": {
+    matched: ["Python", "PyTorch"],
+    missing: ["CUDA", "LLMs"],
+    tags: ["PyTorch", "LLMs", "ML"],
+    salary: "$160k–$215k",
+    internSalary: "$9k / mo",
+  },
+  "Data Scientist": {
+    matched: ["Python", "SQL"],
+    missing: ["Spark"],
+    tags: ["SQL", "Pandas", "Analytics"],
+    salary: "$140k–$180k",
+    internSalary: "$8k / mo",
+  },
+  "Product Designer": {
+    matched: ["Figma"],
+    missing: ["Prototyping", "Design Systems"],
+    tags: ["Figma", "UX", "Design"],
+    salary: "$125k–$165k",
+    internSalary: "$7.5k / mo",
+  },
+}
+
+const GEN_ROLES = Object.keys(ROLE_SPECS)
+const GEN_LOCATIONS = [
+  "San Francisco, CA",
+  "New York, NY",
+  "Seattle, WA",
+  "Remote",
+  "Austin, TX",
+  "Remote",
+]
+const POSTED = ["3h ago", "8h ago", "1d ago", "2d ago", "3d ago", "5d ago", "1w ago"]
+const RESUMES = [
+  "Avery_Rivera_SWE_Infra_v3.pdf",
+  "Avery_Rivera_Frontend_v2.pdf",
+  "Avery_Rivera_Backend_v2.pdf",
+  "Avery_Rivera_Fullstack_v2.pdf",
+]
+
+function dateAfter(base: string, days: number) {
+  const d = new Date(base + "T00:00:00")
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+function generateOpportunities(): Opportunity[] {
+  const out: Opportunity[] = []
+  const count = 32
+  for (let i = 0; i < count; i++) {
+    const company = GEN_COMPANIES[i % GEN_COMPANIES.length]
+    const role = GEN_ROLES[i % GEN_ROLES.length]
+    const spec = ROLE_SPECS[role]
+    const typePick = i % 5
+    const type: OpportunityType =
+      typePick === 0
+        ? "Internship"
+        : typePick === 4 && i % 2 === 0
+          ? "Fellowship"
+          : "Job"
+    const location = GEN_LOCATIONS[i % GEN_LOCATIONS.length]
+    const remote = location === "Remote"
+    const matchScore = 67 + ((i * 7) % 28) // 67..94
+    const deadline = dateAfter("2026-06-23", (i * 5) % 68) // spread to late Aug
+
+    const skills = Math.min(98, matchScore + 4 - (i % 6))
+    const roleScore = Math.min(98, matchScore + (i % 5))
+    const locationScore = remote ? 100 : 70 + ((i * 3) % 26)
+    const timeline = 72 + ((i * 4) % 26)
+
+    let recommendation: Recommendation | undefined
+    if (matchScore >= 90) recommendation = "Best Match"
+    else if (matchScore >= 84) recommendation = "High Priority"
+    else if (i % 4 === 0) recommendation = "Trending"
+
+    const title =
+      type === "Internship"
+        ? `${role} Intern`
+        : type === "Fellowship"
+          ? `${company.org} ${role} Fellowship`
+          : i % 3 === 0
+            ? `${role}, New Grad`
+            : `${role}`
+
+    out.push({
+      id: `gen-${i + 1}`,
+      title,
+      org: company.org,
+      logo: company.logo,
+      type,
+      role,
+      location,
+      remote,
+      matchScore,
+      recommendation,
+      source: company.source,
+      salary:
+        type === "Fellowship"
+          ? undefined
+          : type === "Internship"
+            ? spec.internSalary
+            : spec.salary,
+      posted: POSTED[i % POSTED.length],
+      deadline,
+      tags: spec.tags,
+      description: `${company.org} is hiring a ${role.toLowerCase()} to help build and scale their core products. You'll collaborate across teams to ship high-impact work used by millions.`,
+      requirements: [
+        `Strong fundamentals relevant to a ${role.toLowerCase()} role`,
+        `Experience with ${spec.matched.slice(0, 2).join(" and ")}`,
+        type === "Internship"
+          ? "Currently enrolled in a degree program"
+          : "Prior internship or project experience",
+        "Excellent communication and collaboration skills",
+      ],
+      matchReasons: [
+        `Your ${spec.matched[0]} experience maps directly to ${company.org}'s stack.`,
+        remote
+          ? "Fully remote — matches your location preference."
+          : `${location} is on your radar of target locations.`,
+        matchScore >= 85
+          ? "This is one of your strongest matches this week."
+          : "A solid fit worth a closer look.",
+      ],
+      matchDetail: {
+        skills,
+        role: roleScore,
+        location: locationScore,
+        timeline,
+        skillsMatched: spec.matched,
+        skillsMissing: spec.missing,
+        roleNote: `${role} aligns well with your target roles.`,
+        locationNote: remote
+          ? "Remote — perfect location fit."
+          : `${location} is within your preferred areas.`,
+        timelineNote: "Deadline gives you comfortable runway to apply.",
+      },
+      saved: i % 6 === 0,
+    })
+  }
+  return out
+}
+
+export const opportunities: Opportunity[] = [
+  ...baseOpportunities,
+  ...generateOpportunities(),
+]
+
 export type CalendarEvent = {
   id: string
   date: string // YYYY-MM-DD
@@ -654,24 +960,31 @@ export type CalendarEvent = {
   kind: "Deadline" | "OA" | "Interview" | "Result"
   time?: string
   note?: string
+  opportunityId?: string
 }
 
 export const calendarEvents: CalendarEvent[] = [
-  { id: "e1", date: "2026-06-20", title: "AI Builders Hackathon deadline", org: "Vercel", kind: "Deadline", time: "11:59 PM", note: "Submit project repo and demo video before registration closes." },
-  { id: "e2", date: "2026-06-22", title: "Unstop Championship round 1", org: "Unstop", kind: "Deadline", time: "6:00 PM", note: "Complete 4 algorithmic problems in 2 hours." },
-  { id: "e3", date: "2026-06-24", title: "Online assessment", org: "Microsoft", kind: "OA", time: "Anytime before 9 PM", note: "ML fundamentals + coding section. 90 minutes." },
-  { id: "e4", date: "2026-06-25", title: "Stripe application due", org: "Stripe", kind: "Deadline", time: "11:59 PM", note: "Tailor cover letter to the design-systems team." },
-  { id: "e5", date: "2026-06-26", title: "Onsite interview", org: "Google", kind: "Interview", time: "9:00 AM PT", note: "4 virtual rounds with the Core Infra team." },
-  { id: "e6", date: "2026-06-28", title: "Phone screen", org: "YC Jobs", kind: "Interview", time: "2:30 PM PT", note: "30-min founder call." },
-  { id: "e7", date: "2026-06-28", title: "YC W27 application due", org: "YC Jobs", kind: "Deadline", time: "11:59 PM" },
-  { id: "e8", date: "2026-06-30", title: "Coding assessment", org: "Wellfound", kind: "OA", time: "Anytime", note: "Take-home full-stack task." },
-  { id: "e9", date: "2026-07-01", title: "Offer decision", org: "Unstop", kind: "Result", note: "Accept or decline championship offer." },
-  { id: "e10", date: "2026-07-02", title: "Google application due", org: "Google", kind: "Deadline", time: "11:59 PM" },
-  { id: "e11", date: "2026-07-05", title: "Wellfound application due", org: "Wellfound", kind: "Deadline", time: "11:59 PM" },
-  { id: "e12", date: "2026-07-08", title: "Final round", org: "Amazon", kind: "Interview", time: "10:00 AM PT", note: "5-round loop incl. system design + LP behavioral." },
-  { id: "e13", date: "2026-07-10", title: "Hackathon results", org: "Devfolio", kind: "Result" },
-  { id: "e14", date: "2026-07-15", title: "Microsoft application due", org: "Microsoft", kind: "Deadline", time: "11:59 PM" },
+  { id: "e1", date: "2026-06-20", title: "AI Builders Hackathon deadline", org: "Vercel", kind: "Deadline", time: "11:59 PM", note: "Submit project repo and demo video before registration closes.", opportunityId: "op-3" },
+  { id: "e2", date: "2026-06-22", title: "Unstop Championship round 1", org: "Unstop", kind: "Deadline", time: "6:00 PM", note: "Complete 4 algorithmic problems in 2 hours.", opportunityId: "op-12" },
+  { id: "e3", date: "2026-06-24", title: "Online assessment", org: "Microsoft", kind: "OA", time: "Anytime before 9 PM", note: "ML fundamentals + coding section. 90 minutes.", opportunityId: "op-4" },
+  { id: "e4", date: "2026-06-25", title: "Stripe application due", org: "Stripe", kind: "Deadline", time: "11:59 PM", note: "Tailor cover letter to the design-systems team.", opportunityId: "op-2" },
+  { id: "e5", date: "2026-06-26", title: "Onsite interview", org: "Google", kind: "Interview", time: "9:00 AM PT", note: "4 virtual rounds with the Core Infra team.", opportunityId: "op-1" },
+  { id: "e6", date: "2026-06-27", title: "Founder decision", org: "YC Jobs", kind: "Result", note: "Awaiting final decision from the founders.", opportunityId: "op-10" },
+  { id: "e7", date: "2026-06-28", title: "YC W27 application due", org: "YC Jobs", kind: "Deadline", time: "11:59 PM", opportunityId: "op-10" },
+  { id: "e8", date: "2026-06-23", title: "Awaiting OA result", org: "Wellfound", kind: "Result", note: "Take-home full-stack task under review.", opportunityId: "op-9" },
+  { id: "e9", date: "2026-07-01", title: "Offer decision", org: "Unstop", kind: "Result", note: "Accept or decline championship offer.", opportunityId: "op-12" },
+  { id: "e10", date: "2026-07-02", title: "Google application due", org: "Google", kind: "Deadline", time: "11:59 PM", opportunityId: "op-1" },
+  { id: "e11", date: "2026-07-05", title: "Wellfound application due", org: "Wellfound", kind: "Deadline", time: "11:59 PM", opportunityId: "op-9" },
+  { id: "e12", date: "2026-07-08", title: "Final round", org: "Amazon", kind: "Interview", time: "10:00 AM PT", note: "5-round loop incl. system design + LP behavioral.", opportunityId: "op-5" },
+  { id: "e13", date: "2026-07-10", title: "Hackathon results", org: "Devfolio", kind: "Result", opportunityId: "op-7" },
+  { id: "e14", date: "2026-07-15", title: "Microsoft application due", org: "Microsoft", kind: "Deadline", time: "11:59 PM", opportunityId: "op-4" },
 ]
+
+export type ScanEntry = {
+  time: string
+  found: number
+  status: "success" | "warning"
+}
 
 export type Source = {
   id: string
@@ -682,20 +995,177 @@ export type Source = {
   enabled: boolean
   found: number
   newToday: number
+  newThisWeek: number
   lastScan: string
   cadence: string
   health: "Healthy" | "Degraded"
+  healthNote: string
   url: string
+  categories: string[]
+  scanHistory: ScanEntry[]
 }
 
 export const sources: Source[] = [
-  { id: "s1", name: "Google Careers", logo: "G", category: "Company", status: "Connected", enabled: true, found: 142, newToday: 6, lastScan: "2h ago", cadence: "Every 6 hours", health: "Healthy", url: "careers.google.com" },
-  { id: "s2", name: "Microsoft Careers", logo: "M", category: "Company", status: "Connected", enabled: true, found: 98, newToday: 4, lastScan: "2h ago", cadence: "Every 6 hours", health: "Healthy", url: "careers.microsoft.com" },
-  { id: "s3", name: "Amazon Careers", logo: "A", category: "Company", status: "Connected", enabled: true, found: 211, newToday: 11, lastScan: "5h ago", cadence: "Daily", health: "Degraded", url: "amazon.jobs" },
-  { id: "s4", name: "Wellfound", logo: "W", category: "Aggregator", status: "Connected", enabled: true, found: 87, newToday: 5, lastScan: "1h ago", cadence: "Every 12 hours", health: "Healthy", url: "wellfound.com" },
-  { id: "s5", name: "YC Jobs", logo: "Y", category: "Aggregator", status: "Connected", enabled: true, found: 64, newToday: 3, lastScan: "3h ago", cadence: "Daily", health: "Healthy", url: "ycombinator.com/jobs" },
-  { id: "s6", name: "Devfolio", logo: "D", category: "Hackathons", status: "Connected", enabled: true, found: 41, newToday: 2, lastScan: "4h ago", cadence: "Daily", health: "Healthy", url: "devfolio.co" },
-  { id: "s7", name: "Unstop", logo: "U", category: "Competitions", status: "Paused", enabled: false, found: 33, newToday: 0, lastScan: "2d ago", cadence: "Paused", health: "Healthy", url: "unstop.com" },
+  {
+    id: "s1",
+    name: "Google Careers",
+    logo: "G",
+    category: "Company",
+    status: "Connected",
+    enabled: true,
+    found: 142,
+    newToday: 6,
+    newThisWeek: 24,
+    lastScan: "2h ago",
+    cadence: "Every 6 hours",
+    health: "Healthy",
+    healthNote: "No issues detected. Last 12 scans completed successfully.",
+    url: "careers.google.com",
+    categories: ["Jobs", "Internships"],
+    scanHistory: [
+      { time: "2h ago", found: 6, status: "success" },
+      { time: "8h ago", found: 4, status: "success" },
+      { time: "14h ago", found: 7, status: "success" },
+      { time: "20h ago", found: 3, status: "success" },
+    ],
+  },
+  {
+    id: "s2",
+    name: "Microsoft Careers",
+    logo: "M",
+    category: "Company",
+    status: "Connected",
+    enabled: true,
+    found: 98,
+    newToday: 4,
+    newThisWeek: 18,
+    lastScan: "2h ago",
+    cadence: "Every 6 hours",
+    health: "Healthy",
+    healthNote: "No issues detected.",
+    url: "careers.microsoft.com",
+    categories: ["Jobs", "Internships"],
+    scanHistory: [
+      { time: "2h ago", found: 4, status: "success" },
+      { time: "8h ago", found: 5, status: "success" },
+      { time: "14h ago", found: 2, status: "success" },
+      { time: "20h ago", found: 4, status: "success" },
+    ],
+  },
+  {
+    id: "s3",
+    name: "Amazon Careers",
+    logo: "A",
+    category: "Company",
+    status: "Connected",
+    enabled: true,
+    found: 211,
+    newToday: 11,
+    newThisWeek: 47,
+    lastScan: "5h ago",
+    cadence: "Daily",
+    health: "Degraded",
+    healthNote: "Rate limiting detected — scans are retrying with backoff. Results may lag by a few hours.",
+    url: "amazon.jobs",
+    categories: ["Jobs", "Internships"],
+    scanHistory: [
+      { time: "5h ago", found: 11, status: "warning" },
+      { time: "1d ago", found: 9, status: "success" },
+      { time: "2d ago", found: 14, status: "warning" },
+      { time: "3d ago", found: 8, status: "success" },
+    ],
+  },
+  {
+    id: "s4",
+    name: "Wellfound",
+    logo: "W",
+    category: "Aggregator",
+    status: "Connected",
+    enabled: true,
+    found: 87,
+    newToday: 5,
+    newThisWeek: 21,
+    lastScan: "1h ago",
+    cadence: "Every 12 hours",
+    health: "Healthy",
+    healthNote: "No issues detected.",
+    url: "wellfound.com",
+    categories: ["Jobs", "Internships", "Startups"],
+    scanHistory: [
+      { time: "1h ago", found: 5, status: "success" },
+      { time: "13h ago", found: 6, status: "success" },
+      { time: "1d ago", found: 4, status: "success" },
+      { time: "2d ago", found: 6, status: "success" },
+    ],
+  },
+  {
+    id: "s5",
+    name: "YC Jobs",
+    logo: "Y",
+    category: "Aggregator",
+    status: "Connected",
+    enabled: true,
+    found: 64,
+    newToday: 3,
+    newThisWeek: 15,
+    lastScan: "3h ago",
+    cadence: "Daily",
+    health: "Healthy",
+    healthNote: "No issues detected.",
+    url: "ycombinator.com/jobs",
+    categories: ["Jobs", "Startups"],
+    scanHistory: [
+      { time: "3h ago", found: 3, status: "success" },
+      { time: "1d ago", found: 5, status: "success" },
+      { time: "2d ago", found: 2, status: "success" },
+      { time: "3d ago", found: 5, status: "success" },
+    ],
+  },
+  {
+    id: "s6",
+    name: "Devfolio",
+    logo: "D",
+    category: "Hackathons",
+    status: "Connected",
+    enabled: true,
+    found: 41,
+    newToday: 2,
+    newThisWeek: 9,
+    lastScan: "4h ago",
+    cadence: "Daily",
+    health: "Healthy",
+    healthNote: "No issues detected.",
+    url: "devfolio.co",
+    categories: ["Hackathons", "Competitions"],
+    scanHistory: [
+      { time: "4h ago", found: 2, status: "success" },
+      { time: "1d ago", found: 3, status: "success" },
+      { time: "2d ago", found: 1, status: "success" },
+      { time: "3d ago", found: 3, status: "success" },
+    ],
+  },
+  {
+    id: "s7",
+    name: "Unstop",
+    logo: "U",
+    category: "Competitions",
+    status: "Paused",
+    enabled: false,
+    found: 33,
+    newToday: 0,
+    newThisWeek: 0,
+    lastScan: "2d ago",
+    cadence: "Paused",
+    health: "Healthy",
+    healthNote: "Source manually disabled. Resume to continue scanning.",
+    url: "unstop.com",
+    categories: ["Competitions", "Hackathons"],
+    scanHistory: [
+      { time: "2d ago", found: 4, status: "success" },
+      { time: "3d ago", found: 6, status: "success" },
+      { time: "4d ago", found: 3, status: "success" },
+    ],
+  },
 ]
 
 export type ScanActivity = {
@@ -786,7 +1256,33 @@ export const profile = {
   email: "avery@radar.dev",
   headline: "New-grad software engineer • infra & full-stack",
   initials: "AR",
+  graduationYear: "",
+  workAuthorization: "",
+  desiredComp: "",
+  resumeUploaded: false,
+  phone: "+1 (415) 555-0142",
+  location: "San Francisco, CA",
 }
+
+export type ProfileChecklistItem = {
+  id: string
+  label: string
+  complete: boolean
+}
+
+export const profileChecklist: ProfileChecklistItem[] = [
+  { id: "name", label: "Full name", complete: true },
+  { id: "email", label: "Email", complete: true },
+  { id: "headline", label: "Headline", complete: true },
+  { id: "skills", label: "Skills", complete: true },
+  { id: "roles", label: "Preferred roles", complete: true },
+  { id: "locations", label: "Preferred locations", complete: true },
+  { id: "phone", label: "Phone", complete: true },
+  { id: "gradYear", label: "Graduation Year", complete: false },
+  { id: "resume", label: "Resume", complete: false },
+  { id: "workAuth", label: "Work Authorization", complete: false },
+  { id: "desiredComp", label: "Desired Compensation", complete: false },
+]
 
 export const notificationPrefs = [
   { id: "np1", label: "New high matches", detail: "Notify when a 90%+ match is found", enabled: true },
@@ -807,4 +1303,12 @@ export const discoveryPrefs = {
   interests: ["Job", "Internship", "Hackathon", "Competition"] as OpportunityType[],
   cadence: "Every 6 hours",
   autoSaveHighMatches: true,
+}
+
+// Maps a calendar event to its underlying opportunity (if tracked).
+export function opportunityForEvent(event: CalendarEvent): Opportunity | undefined {
+  if (event.opportunityId) {
+    return opportunities.find((o) => o.id === event.opportunityId)
+  }
+  return opportunities.find((o) => o.org === event.org)
 }

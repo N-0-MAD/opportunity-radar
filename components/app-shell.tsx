@@ -1,8 +1,10 @@
 "use client"
 
-import { Bell, Plus, Search } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 
 import { AppSidebar } from "@/components/app-sidebar"
+import { NotificationCenter } from "@/components/notification-center"
+import { OpportunityDrawerProvider } from "@/components/opportunity-drawer"
 import { Button } from "@/components/ui/button"
 import {
   SidebarInset,
@@ -38,17 +40,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </InputGroup>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="relative" aria-label="Notifications">
-              <Bell />
-              <span className="absolute right-2 top-2 size-1.5 rounded-full bg-primary" />
-            </Button>
+            <NotificationCenter />
             <Button size="sm">
               <Plus data-icon="inline-start" />
               Add opportunity
             </Button>
           </div>
         </header>
-        <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">{children}</main>
+        <main className="flex flex-1 flex-col gap-6 p-4 md:p-6">
+          <OpportunityDrawerProvider>{children}</OpportunityDrawerProvider>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )

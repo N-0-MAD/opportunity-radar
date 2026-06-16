@@ -2,10 +2,9 @@
 
 import { useMemo, useState } from "react"
 import { Compass, Search, SlidersHorizontal } from "lucide-react"
-import { toast } from "sonner"
 
 import { OpportunityCard } from "@/components/discover/opportunity-card"
-import { MatchPanel } from "@/components/discover/match-panel"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -36,24 +35,16 @@ import {
   ROLES,
   LOCATIONS,
   sources as allSources,
-  type Opportunity,
 } from "@/lib/mock-data"
 
 export function DiscoverView() {
+  const { open, isSaved, isTracked, toggleSave, track } =
+    useOpportunityDrawer()
   const [query, setQuery] = useState("")
   const [types, setTypes] = useState<string[]>([])
   const [role, setRole] = useState("all")
   const [location, setLocation] = useState("all")
   const [source, setSource] = useState("all")
-  const [active, setActive] = useState<Opportunity | null>(null)
-  const [open, setOpen] = useState(false)
-
-  const [saved, setSaved] = useState<Set<string>>(
-    () => new Set(opportunities.filter((o) => o.saved).map((o) => o.id)),
-  )
-  const [tracked, setTracked] = useState<Set<string>>(
-    () => new Set(opportunities.filter((o) => o.stage).map((o) => o.id)),
-  )
 
   const sourceNames = useMemo(
     () => Array.from(new Set(allSources.map((s) => s.name))),
@@ -81,37 +72,6 @@ export function DiscoverView() {
       return true
     })
   }, [query, types, role, location, source])
-
-  function explain(op: Opportunity) {
-    setActive(op)
-    setOpen(true)
-  }
-
-  function toggleSave(id: string) {
-    setSaved((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-        toast("Removed from saved")
-      } else {
-        next.add(id)
-        toast.success("Saved to your list")
-      }
-      return next
-    })
-  }
-
-  function track(id: string) {
-    setTracked((prev) => {
-      if (prev.has(id)) return prev
-      const next = new Set(prev)
-      next.add(id)
-      toast.success("Added to My Opportunities", {
-        description: "Tracking in the Interested stage.",
-      })
-      return next
-    })
-  }
 
   function resetFilters() {
     setQuery("")
@@ -223,9 +183,9 @@ export function DiscoverView() {
               <OpportunityCard
                 key={op.id}
                 op={op}
-                saved={saved.has(op.id)}
-                tracked={tracked.has(op.id)}
-                onExplain={explain}
+                saved={isSaved(op.id)}
+                tracked={isTracked(op.id)}
+                onExplain={open}
                 onToggleSave={toggleSave}
                 onTrack={track}
               />
@@ -249,16 +209,6 @@ export function DiscoverView() {
           </EmptyContent>
         </Empty>
       )}
-
-      <MatchPanel
-        op={active}
-        open={open}
-        onOpenChange={setOpen}
-        saved={active ? saved.has(active.id) : false}
-        tracked={active ? tracked.has(active.id) : false}
-        onToggleSave={toggleSave}
-        onTrack={track}
-      />
     </div>
   )
 }

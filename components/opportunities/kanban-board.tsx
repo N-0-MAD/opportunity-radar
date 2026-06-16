@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { BrandLogo } from "@/components/brand-logo"
 import { MatchScore } from "@/components/match-score"
 import { HealthBadge } from "@/components/health-badge"
-import { DetailsDrawer } from "@/components/opportunities/details-drawer"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import { Badge } from "@/components/ui/badge"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
@@ -101,12 +101,12 @@ function Card({
 }
 
 export function KanbanBoard() {
+  const { open } = useOpportunityDrawer()
   const [items, setItems] = useState<Opportunity[]>(
     seed.filter((o) => o.stage),
   )
   const [dragId, setDragId] = useState<string | null>(null)
   const [overStage, setOverStage] = useState<Stage | null>(null)
-  const [active, setActive] = useState<Opportunity | null>(null)
 
   const byStage = useMemo(() => {
     const map = {} as Record<Stage, Opportunity[]>
@@ -195,7 +195,7 @@ export function KanbanBoard() {
                   key={op.id}
                   op={op}
                   onDragStart={setDragId}
-                  onOpen={setActive}
+                  onOpen={open}
                 />
               ))}
               {byStage[stage].length === 0 ? (

@@ -30,7 +30,10 @@ export function OpportunityCard({
   onTrack: (id: string) => void
 }) {
   return (
-    <Card className="group gap-0 py-0 transition-colors hover:border-border">
+    <Card
+      onClick={() => onExplain(op)}
+      className="group cursor-pointer gap-0 py-0 transition-colors hover:border-border"
+    >
       <CardContent className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start gap-3">
           <BrandLogo label={op.logo} className="size-11" />
@@ -44,7 +47,10 @@ export function OpportunityCard({
             variant="ghost"
             size="icon-sm"
             aria-label={saved ? "Remove from saved" : "Save"}
-            onClick={() => onToggleSave(op.id)}
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleSave(op.id)
+            }}
           >
             <Bookmark className={cn(saved && "fill-primary text-primary")} />
           </Button>
@@ -101,7 +107,10 @@ export function OpportunityCard({
           variant="outline"
           size="sm"
           className="mt-auto w-full justify-center"
-          onClick={() => onExplain(op)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onExplain(op)
+          }}
         >
           <Sparkles data-icon="inline-start" />
           Why this matches
@@ -112,7 +121,10 @@ export function OpportunityCard({
           variant="ghost"
           size="sm"
           className="justify-center"
-          onClick={() => onToggleSave(op.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onToggleSave(op.id)
+          }}
         >
           <Bookmark
             data-icon="inline-start"
@@ -125,7 +137,10 @@ export function OpportunityCard({
           size="sm"
           className="justify-center"
           disabled={tracked}
-          onClick={() => onTrack(op.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onTrack(op.id)
+          }}
         >
           <Plus data-icon="inline-start" />
           {tracked ? "Tracking" : "Track"}
@@ -133,7 +148,12 @@ export function OpportunityCard({
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button variant="ghost" size="sm" className="justify-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <ExternalLink data-icon="inline-start" />
                 View
               </Button>
