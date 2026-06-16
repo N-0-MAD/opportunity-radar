@@ -1,8 +1,11 @@
+"use client"
+
 import { AlertTriangle, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 import { BrandLogo } from "@/components/brand-logo"
 import { UrgencyBadge } from "@/components/urgency-badge"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -16,6 +19,7 @@ import { daysUntil } from "@/lib/dates"
 import { opportunities } from "@/lib/mock-data"
 
 export function DeadlineRisk() {
+  const { open } = useOpportunityDrawer()
   const atRisk = opportunities
     .filter((op) => {
       const d = daysUntil(op.deadline)
@@ -47,9 +51,11 @@ export function DeadlineRisk() {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         {atRisk.map((op) => (
-          <div
+          <button
             key={op.id}
-            className="flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 p-3 transition-colors hover:border-border"
+            type="button"
+            onClick={() => open(op)}
+            className="flex w-full items-center gap-3 rounded-lg border border-border/60 bg-card/40 p-3 text-left transition-colors hover:border-border"
           >
             <BrandLogo label={op.logo} className="size-9" />
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -59,7 +65,7 @@ export function DeadlineRisk() {
               </span>
             </div>
             <UrgencyBadge date={op.deadline} />
-          </div>
+          </button>
         ))}
       </CardContent>
     </Card>

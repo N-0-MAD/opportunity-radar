@@ -207,14 +207,6 @@ export function KanbanBoard() {
           </div>
         ))}
       </div>
-
-      <DetailsDrawer
-        op={active}
-        open={active !== null}
-        onOpenChange={(open) => {
-          if (!open) setActive(null)
-        }}
-      />
     </div>
   )
 }

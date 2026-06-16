@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import {
+  ArrowUpRight,
   CalendarClock,
   CalendarDays,
   ChevronLeft,
@@ -22,9 +23,14 @@ import {
 } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { BrandLogo } from "@/components/brand-logo"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import { cn } from "@/lib/utils"
 import { formatLongDate, relativeDay } from "@/lib/dates"
-import { calendarEvents, type CalendarEvent } from "@/lib/mock-data"
+import {
+  calendarEvents,
+  opportunities,
+  type CalendarEvent,
+} from "@/lib/mock-data"
 
 const KIND_TONE: Record<CalendarEvent["kind"], string> = {
   Deadline: "bg-destructive/15 text-destructive border-destructive/25",
@@ -67,6 +73,7 @@ const KINDS: CalendarEvent["kind"][] = ["Deadline", "OA", "Interview", "Result"]
 const TODAY = "2026-06-18"
 
 export function CalendarView() {
+  const { open: openOpportunity } = useOpportunityDrawer()
   const [cursor, setCursor] = useState({ year: 2026, month: 5 })
   const [view, setView] = useState<"month" | "agenda">("month")
   const [active, setActive] = useState<CalendarEvent | null>(null)
@@ -360,6 +367,23 @@ export function CalendarView() {
                       {active.note}
                     </p>
                   </div>
+                ) : null}
+                {opportunities.some((o) => o.id === active.opportunityId) ? (
+                  <Button
+                    className="mt-1 w-full justify-center"
+                    onClick={() => {
+                      const op = opportunities.find(
+                        (o) => o.id === active.opportunityId,
+                      )
+                      if (op) {
+                        setActive(null)
+                        openOpportunity(op)
+                      }
+                    }}
+                  >
+                    View opportunity
+                    <ArrowUpRight data-icon="inline-end" />
+                  </Button>
                 ) : null}
               </div>
             </>

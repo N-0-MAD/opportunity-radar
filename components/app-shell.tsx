@@ -1,6 +1,7 @@
 "use client"
 
 import { Plus, Search } from "lucide-react"
+import { toast } from "sonner"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { NotificationCenter } from "@/components/notification-center"
@@ -41,7 +42,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <NotificationCenter />
-            <Button size="sm">
+            <Button
+              size="sm"
+              onClick={() =>
+                toast("Add an opportunity", {
+                  description: "Paste a job link or fill in the details.",
+                })
+              }
+            >
               <Plus data-icon="inline-start" />
               Add opportunity
             </Button>

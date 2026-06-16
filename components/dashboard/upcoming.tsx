@@ -1,6 +1,9 @@
+"use client"
+
 import { CalendarClock, ClipboardCheck, Video } from "lucide-react"
 
 import { BrandLogo } from "@/components/brand-logo"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import {
   Card,
   CardContent,
@@ -8,7 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { calendarEvents, type CalendarEvent } from "@/lib/mock-data"
+import {
+  calendarEvents,
+  opportunities,
+  type CalendarEvent,
+} from "@/lib/mock-data"
 
 function formatDate(date: string) {
   return new Date(date + "T00:00:00").toLocaleDateString("en-US", {
@@ -27,8 +34,15 @@ function daysAway(date: string) {
 }
 
 function EventRow({ event }: { event: CalendarEvent }) {
+  const { open } = useOpportunityDrawer()
+  const op = opportunities.find((o) => o.id === event.opportunityId)
   return (
-    <div className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-muted/50">
+    <button
+      type="button"
+      disabled={!op}
+      onClick={() => op && open(op)}
+      className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-muted/50 disabled:cursor-default disabled:hover:bg-transparent"
+    >
       <BrandLogo label={event.org.charAt(0)} className="size-9" />
       <div className="flex min-w-0 flex-1 flex-col">
         <span className="truncate text-sm font-medium">{event.title}</span>
@@ -44,7 +58,7 @@ function EventRow({ event }: { event: CalendarEvent }) {
           {daysAway(event.date)}
         </span>
       </div>
-    </div>
+    </button>
   )
 }
 

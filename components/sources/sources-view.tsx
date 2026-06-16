@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner"
 
 import { BrandLogo } from "@/components/brand-logo"
+import { SourceDrawer } from "@/components/sources/source-drawer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,6 +31,9 @@ import { sources as seed, recentScans, type Source } from "@/lib/mock-data"
 export function SourcesView() {
   const [items, setItems] = useState<Source[]>(seed)
   const [scanning, setScanning] = useState(false)
+  const [activeId, setActiveId] = useState<string | null>(null)
+
+  const active = items.find((s) => s.id === activeId) ?? null
 
   const stats = useMemo(() => {
     const connected = items.filter((s) => s.enabled).length
@@ -118,7 +122,12 @@ export function SourcesView() {
 
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {items.map((s) => (
-              <SourceCard key={s.id} source={s} onToggle={toggle} />
+              <SourceCard
+                key={s.id}
+                source={s}
+                onToggle={toggle}
+                onOpen={setActiveId}
+              />
             ))}
 
             <button
@@ -174,6 +183,15 @@ export function SourcesView() {
           </CardContent>
         </Card>
       </div>
+
+      <SourceDrawer
+        source={active}
+        open={activeId !== null}
+        onOpenChange={(open) => {
+          if (!open) setActiveId(null)
+        }}
+        onToggle={toggle}
+      />
     </div>
   )
 }
@@ -181,14 +199,25 @@ export function SourcesView() {
 function SourceCard({
   source,
   onToggle,
+  onOpen,
 }: {
   source: Source
   onToggle: (id: string) => void
+  onOpen: (id: string) => void
 }) {
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(source.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onOpen(source.id)
+        }
+      }}
       className={cn(
-        "flex flex-col gap-3 rounded-xl border border-border/60 bg-card p-4 transition-opacity",
+        "flex cursor-pointer flex-col gap-3 rounded-xl border border-border/60 bg-card p-4 transition-colors hover:border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         !source.enabled && "opacity-60",
       )}
     >
@@ -202,11 +231,13 @@ function SourceCard({
             {source.url}
           </span>
         </div>
-        <Switch
-          checked={source.enabled}
-          onCheckedChange={() => onToggle(source.id)}
-          aria-label={`Toggle ${source.name}`}
-        />
+        <span onClick={(e) => e.stopPropagation()}>
+          <Switch
+            checked={source.enabled}
+            onCheckedChange={() => onToggle(source.id)}
+            aria-label={`Toggle ${source.name}`}
+          />
+        </span>
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">

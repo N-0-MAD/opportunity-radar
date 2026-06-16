@@ -1,7 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Bell, MapPin, Plus, Sparkles, User, X } from "lucide-react"
+import {
+  Bell,
+  CheckCircle2,
+  Circle,
+  FileText,
+  MapPin,
+  Plus,
+  Sparkles,
+  Upload,
+  User,
+  X,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -22,6 +33,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
@@ -39,6 +51,7 @@ import {
   preferredLocations,
   preferredRoles,
   profile,
+  profileChecklist,
   skills as seedSkills,
   type OpportunityType,
 } from "@/lib/mock-data"
@@ -181,7 +194,77 @@ function ProfileSection() {
                 A short summary shown on your profile.
               </FieldDescription>
             </Field>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="phone">Phone</FieldLabel>
+                <Input id="phone" defaultValue={profile.phone} />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="location">Location</FieldLabel>
+                <Input id="location" defaultValue={profile.location} />
+              </Field>
+            </div>
           </FieldGroup>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Application details</CardTitle>
+          <CardDescription>
+            Required by many applications — completing these unlocks one-click
+            apply and stronger matches.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <FieldGroup>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="gradYear">Graduation year</FieldLabel>
+                <Input
+                  id="gradYear"
+                  placeholder="e.g. 2026"
+                  defaultValue={profile.graduationYear}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="workAuth">Work authorization</FieldLabel>
+                <Input
+                  id="workAuth"
+                  placeholder="e.g. US Citizen, No sponsorship needed"
+                  defaultValue={profile.workAuthorization}
+                />
+              </Field>
+            </div>
+            <Field>
+              <FieldLabel htmlFor="desiredComp">
+                Desired compensation
+              </FieldLabel>
+              <Input
+                id="desiredComp"
+                placeholder="e.g. $150k base"
+                defaultValue={profile.desiredComp}
+              />
+              <FieldDescription>
+                Used to filter out roles below your target. Never shared with
+                employers.
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+        </CardContent>
+      </Card>
+
+      <ResumeCard />
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile strength</CardTitle>
+          <CardDescription>
+            Complete every section to maximize match accuracy.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProfileChecklist />
         </CardContent>
       </Card>
 
@@ -439,6 +522,104 @@ function ToggleRow({
         <span className="text-xs text-muted-foreground">{detail}</span>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} aria-label={label} />
+    </div>
+  )
+}
+
+function ResumeCard() {
+  const [fileName, setFileName] = useState<string | null>(null)
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Resume</CardTitle>
+        <CardDescription>
+          We tailor match reasoning to your most recent resume.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {fileName ? (
+          <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 p-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <FileText className="size-5" />
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-sm font-medium">{fileName}</span>
+              <span className="text-xs text-muted-foreground">
+                Uploaded just now
+              </span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setFileName(null)
+                toast.info("Resume removed")
+              }}
+            >
+              Remove
+            </Button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setFileName("Avery_Rivera_Resume.pdf")
+              toast.success("Resume uploaded")
+            }}
+            className="flex w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/70 bg-card/30 p-6 text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-muted">
+              <Upload className="size-4" />
+            </span>
+            <span className="text-sm font-medium">Upload your resume</span>
+            <span className="text-xs">PDF or DOCX, up to 5MB</span>
+          </button>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function ProfileChecklist() {
+  const total = profileChecklist.length
+  const done = profileChecklist.filter((i) => i.complete).length
+  const pct = Math.round((done / total) * 100)
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <span className="text-sm font-medium">{pct}% complete</span>
+          <span className="text-xs text-muted-foreground">
+            {done} of {total} fields
+          </span>
+        </div>
+        <Progress value={pct} />
+      </div>
+      <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+        {profileChecklist.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-center gap-2 text-sm"
+          >
+            {item.complete ? (
+              <CheckCircle2 className="size-4 shrink-0 text-success" />
+            ) : (
+              <Circle className="size-4 shrink-0 text-muted-foreground/50" />
+            )}
+            <span
+              className={cn(
+                item.complete
+                  ? "text-muted-foreground"
+                  : "font-medium text-foreground",
+              )}
+            >
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,9 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight, Briefcase, MapPin, Wrench } from "lucide-react"
 
 import { BrandLogo } from "@/components/brand-logo"
 import { MatchScore } from "@/components/match-score"
 import { RecommendationBadge } from "@/components/recommendation-badge"
+import { useOpportunityDrawer } from "@/components/opportunity-drawer"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -16,6 +19,7 @@ import {
 import { opportunities } from "@/lib/mock-data"
 
 export function MatchHighlights() {
+  const { open } = useOpportunityDrawer()
   const top = [...opportunities]
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 4)
@@ -40,9 +44,11 @@ export function MatchHighlights() {
       </CardHeader>
       <CardContent className="flex flex-col gap-2.5">
         {top.map((op) => (
-          <div
+          <button
             key={op.id}
-            className="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 p-3 transition-colors hover:border-border hover:bg-muted/40"
+            type="button"
+            onClick={() => open(op)}
+            className="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 p-3 text-left transition-colors hover:border-border hover:bg-muted/40"
           >
             <div className="flex items-center gap-3">
               <BrandLogo label={op.logo} className="size-10" />
@@ -83,7 +89,7 @@ export function MatchHighlights() {
                 ))}
               </div>
             ) : null}
-          </div>
+          </button>
         ))}
       </CardContent>
     </Card>
