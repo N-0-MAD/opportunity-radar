@@ -1,11 +1,21 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Search, SlidersHorizontal } from "lucide-react"
+import { Compass, Search, SlidersHorizontal } from "lucide-react"
+import { toast } from "sonner"
 
 import { OpportunityCard } from "@/components/discover/opportunity-card"
 import { MatchPanel } from "@/components/discover/match-panel"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import {
   InputGroup,
   InputGroupAddon,
@@ -19,15 +29,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   opportunities,
   OPPORTUNITY_TYPES,
   ROLES,
   LOCATIONS,
+  sources as allSources,
   type Opportunity,
 } from "@/lib/mock-data"
 
@@ -36,8 +44,21 @@ export function DiscoverView() {
   const [types, setTypes] = useState<string[]>([])
   const [role, setRole] = useState("all")
   const [location, setLocation] = useState("all")
+  const [source, setSource] = useState("all")
   const [active, setActive] = useState<Opportunity | null>(null)
   const [open, setOpen] = useState(false)
+
+  const [saved, setSaved] = useState<Set<string>>(
+    () => new Set(opportunities.filter((o) => o.saved).map((o) => o.id)),
+  )
+  const [tracked, setTracked] = useState<Set<string>>(
+    () => new Set(opportunities.filter((o) => o.stage).map((o) => o.id)),
+  )
+
+  const sourceNames = useMemo(
+    () => Array.from(new Set(allSources.map((s) => s.name))),
+    [],
+  )
 
   const results = useMemo(() => {
     return opportunities.filter((op) => {
@@ -50,15 +71,54 @@ export function DiscoverView() {
         return false
       if (types.length && !types.includes(op.type)) return false
       if (role !== "all" && op.role !== role) return false
-      if (location !== "all" && op.location !== location && !(location === "Remote" && op.remote))
+      if (source !== "all" && op.source !== source) return false
+      if (
+        location !== "all" &&
+        op.location !== location &&
+        !(location === "Remote" && op.remote)
+      )
         return false
       return true
     })
-  }, [query, types, role, location])
+  }, [query, types, role, location, source])
 
   function explain(op: Opportunity) {
     setActive(op)
     setOpen(true)
+  }
+
+  function toggleSave(id: string) {
+    setSaved((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+        toast("Removed from saved")
+      } else {
+        next.add(id)
+        toast.success("Saved to your list")
+      }
+      return next
+    })
+  }
+
+  function track(id: string) {
+    setTracked((prev) => {
+      if (prev.has(id)) return prev
+      const next = new Set(prev)
+      next.add(id)
+      toast.success("Added to My Opportunities", {
+        description: "Tracking in the Interested stage.",
+      })
+      return next
+    })
+  }
+
+  function resetFilters() {
+    setQuery("")
+    setTypes([])
+    setRole("all")
+    setLocation("all")
+    setSource("all")
   }
 
   return (
@@ -79,7 +139,7 @@ export function DiscoverView() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Select value={role} onValueChange={setRole}>
-              <SelectTrigger size="sm" className="w-40">
+              <SelectTrigger size="sm" className="w-36">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
@@ -94,7 +154,7 @@ export function DiscoverView() {
               </SelectContent>
             </Select>
             <Select value={location} onValueChange={setLocation}>
-              <SelectTrigger size="sm" className="w-40">
+              <SelectTrigger size="sm" className="w-36">
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
@@ -103,6 +163,21 @@ export function DiscoverView() {
                   {LOCATIONS.map((l) => (
                     <SelectItem key={l} value={l}>
                       {l}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select value={source} onValueChange={setSource}>
+              <SelectTrigger size="sm" className="w-36">
+                <SelectValue placeholder="Source" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">All sources</SelectItem>
+                  {sourceNames.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -145,19 +220,45 @@ export function DiscoverView() {
           {[...results]
             .sort((a, b) => b.matchScore - a.matchScore)
             .map((op) => (
-              <OpportunityCard key={op.id} op={op} onExplain={explain} />
+              <OpportunityCard
+                key={op.id}
+                op={op}
+                saved={saved.has(op.id)}
+                tracked={tracked.has(op.id)}
+                onExplain={explain}
+                onToggleSave={toggleSave}
+                onTrack={track}
+              />
             ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border py-20 text-center">
-          <p className="text-sm font-medium">No opportunities found</p>
-          <p className="text-sm text-muted-foreground">
-            Try adjusting your filters or search.
-          </p>
-        </div>
+        <Empty className="rounded-xl border border-dashed border-border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Compass />
+            </EmptyMedia>
+            <EmptyTitle>No opportunities found</EmptyTitle>
+            <EmptyDescription>
+              Try adjusting your filters or search terms to widen the radar.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button variant="outline" size="sm" onClick={resetFilters}>
+              Clear filters
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
 
-      <MatchPanel op={active} open={open} onOpenChange={setOpen} />
+      <MatchPanel
+        op={active}
+        open={open}
+        onOpenChange={setOpen}
+        saved={active ? saved.has(active.id) : false}
+        tracked={active ? tracked.has(active.id) : false}
+        onToggleSave={toggleSave}
+        onTrack={track}
+      />
     </div>
   )
 }

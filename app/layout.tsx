@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { Toaster } from '@/components/ui/sonner'
 import { AppShell } from '@/components/app-shell'
 import './globals.css'
 
@@ -54,6 +55,7 @@ export default function RootLayout({
         <TooltipProvider delayDuration={200}>
           <AppShell>{children}</AppShell>
         </TooltipProvider>
+        <Toaster position="bottom-right" />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
