@@ -52,7 +52,7 @@ export default function RootLayout({
       className={`dark ${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="bg-background font-sans antialiased">
-        <TooltipProvider delayDuration={200}>
+        <TooltipProvider>
           <AppShell>{children}</AppShell>
         </TooltipProvider>
         <Toaster position="bottom-right" />

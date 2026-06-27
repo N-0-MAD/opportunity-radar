@@ -332,7 +332,7 @@ function MatchingSection() {
           </div>
           <Slider
             value={[minMatch]}
-            onValueChange={(v: number[]) => setMinMatch(v[0])}
+            onValueChange={(v) =>setMinMatch(Array.isArray(v) ? v[0] : v)}
             min={50}
             max={95}
             step={5}

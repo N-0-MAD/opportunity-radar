@@ -98,7 +98,7 @@ export function DiscoverView() {
             </InputGroup>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Select value={role} onValueChange={setRole}>
+            <Select value={role} onValueChange={(value) => value && setRole(value)}>
               <SelectTrigger size="sm" className="w-36">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
@@ -113,7 +113,7 @@ export function DiscoverView() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Select value={location} onValueChange={setLocation}>
+            <Select value={location} onValueChange={(value) => value && setLocation(value)}>
               <SelectTrigger size="sm" className="w-36">
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
@@ -128,7 +128,7 @@ export function DiscoverView() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Select value={source} onValueChange={setSource}>
+            <Select value={source} onValueChange={(value) => value && setSource(value)}>
               <SelectTrigger size="sm" className="w-36">
                 <SelectValue placeholder="Source" />
               </SelectTrigger>
