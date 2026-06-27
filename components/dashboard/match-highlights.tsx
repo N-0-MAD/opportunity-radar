@@ -33,6 +33,7 @@ export function MatchHighlights() {
           <Button
             variant="ghost"
             size="sm"
+            nativeButton={false}
             render={
               <Link href="/discover">
                 View all
