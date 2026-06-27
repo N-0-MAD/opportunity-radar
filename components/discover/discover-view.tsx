@@ -30,14 +30,18 @@ import {
 } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  opportunities,
   OPPORTUNITY_TYPES,
   ROLES,
   LOCATIONS,
   sources as allSources,
+  type Opportunity,
 } from "@/lib/mock-data"
 
-export function DiscoverView() {
+export function DiscoverView({
+  opportunities,
+}: {
+  opportunities: Opportunity[]
+}) {
   const { open, isSaved, isTracked, toggleSave, track } =
     useOpportunityDrawer()
   const [query, setQuery] = useState("")

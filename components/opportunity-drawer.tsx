@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react"
@@ -49,7 +50,7 @@ import {
 } from "@/components/ui/sheet"
 import { formatLongDate, relativeDay } from "@/lib/dates"
 import { cn } from "@/lib/utils"
-import { opportunities, type Opportunity } from "@/lib/mock-data"
+import type { Opportunity } from "@/lib/mock-data"
 
 type DrawerContextValue = {
   open: (op: Opportunity) => void
@@ -78,22 +79,37 @@ export function OpportunityDrawerProvider({
 }) {
   const [activeOp, setActiveOp] = useState<Opportunity | null>(null)
   const [open, setOpen] = useState(false)
-  const [saved, setSaved] = useState<Set<string>>(
-    () => new Set(opportunities.filter((o) => o.saved).map((o) => o.id)),
-  )
-  const [tracked, setTracked] = useState<Set<string>>(
-    () => new Set(opportunities.filter((o) => o.stage).map((o) => o.id)),
-  )
+  const [saved, setSaved] = useState<Set<string>>(() => new Set())
+  const [tracked, setTracked] = useState<Set<string>>(() => new Set())
+
+  useEffect(() => {
+    let mounted = true
+
+    fetch("/api/opportunities/save")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { savedIds: string[]; trackedIds: string[] } | null) => {
+        if (!mounted || !data) return
+
+        setSaved(new Set(data.savedIds))
+        setTracked(new Set(data.trackedIds))
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   const openOp = useCallback((op: Opportunity) => {
     setActiveOp(op)
     setOpen(true)
   }, [])
 
-  const toggleSave = useCallback((id: string) => {
+  const toggleSave = useCallback(async (id: string) => {
+    const wasSaved = saved.has(id)
+
     setSaved((prev) => {
       const next = new Set(prev)
-      if (next.has(id)) {
+      if (wasSaved) {
         next.delete(id)
         toast("Removed from saved")
       } else {
@@ -102,14 +118,44 @@ export function OpportunityDrawerProvider({
       }
       return next
     })
-  }, [])
 
-  const track = useCallback((id: string) => {
-    setTracked((prev) => {
-      if (prev.has(id)) {
-        toast("Already in My Opportunities")
-        return prev
+    try {
+      const res = await fetch("/api/opportunities/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          opportunityId: id,
+          action: wasSaved ? "unsave" : "save",
+        }),
+      })
+
+      if (!res.ok) throw new Error("Failed to update saved opportunity")
+
+      const data = (await res.json()) as {
+        opportunityId: string
+        saved: boolean
+        tracked: boolean
       }
+
+      setPersistedState(data)
+    } catch {
+      setSaved((prev) => {
+        const next = new Set(prev)
+        if (wasSaved) next.add(id)
+        else next.delete(id)
+        return next
+      })
+      toast.error("Could not update saved opportunity")
+    }
+  }, [saved])
+
+  const track = useCallback(async (id: string) => {
+    if (tracked.has(id)) {
+      toast("Already in My Opportunities")
+      return
+    }
+
+    setTracked((prev) => {
       const next = new Set(prev)
       next.add(id)
       toast.success("Added to My Opportunities", {
@@ -117,7 +163,55 @@ export function OpportunityDrawerProvider({
       })
       return next
     })
-  }, [])
+
+    try {
+      const res = await fetch("/api/opportunities/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ opportunityId: id, action: "track" }),
+      })
+
+      if (!res.ok) throw new Error("Failed to track opportunity")
+
+      const data = (await res.json()) as {
+        opportunityId: string
+        saved: boolean
+        tracked: boolean
+      }
+
+      setPersistedState(data)
+    } catch {
+      setTracked((prev) => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
+      toast.error("Could not track opportunity")
+    }
+  }, [tracked])
+
+  function setPersistedState({
+    opportunityId,
+    saved: isSaved,
+    tracked: isTracked,
+  }: {
+    opportunityId: string
+    saved: boolean
+    tracked: boolean
+  }) {
+    setSaved((prev) => {
+      const next = new Set(prev)
+      if (isSaved) next.add(opportunityId)
+      else next.delete(opportunityId)
+      return next
+    })
+    setTracked((prev) => {
+      const next = new Set(prev)
+      if (isTracked) next.add(opportunityId)
+      else next.delete(opportunityId)
+      return next
+    })
+  }
 
   const value = useMemo<DrawerContextValue>(
     () => ({
